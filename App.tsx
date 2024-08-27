@@ -25,6 +25,15 @@ import {
   ReloadInstructions,
 } from 'react-native/Libraries/NewAppScreen';
 
+import LaunchScreen from './src/screens/LaunchScreen';
+import {NavigationContainer} from '@react-navigation/native';
+import {createNativeStackNavigator} from '@react-navigation/native-stack';
+import CreateAccountDetails from './src/screens/CreateAccountDetails';
+import CreateAccount from './src/screens/CreateAccount';
+import Home from './src/screens/Home';
+import CreateAccountHeader from './src/components/CreateAccountHeader';
+import CreateAccountDetailsHeader from './src/components/CreateAccountDetailsHeader';
+
 type SectionProps = PropsWithChildren<{
   title: string;
 }>;
@@ -33,15 +42,7 @@ function Section({children, title}: SectionProps): React.JSX.Element {
   const isDarkMode = useColorScheme() === 'dark';
   return (
     <View style={styles.sectionContainer}>
-      <Text
-        style={[
-          styles.sectionTitle,
-          {
-            color: isDarkMode ? Colors.white : Colors.black,
-          },
-        ]}>
-        {title}
-      </Text>
+      <Text className="text-yellow-400 text-lg">{title}</Text>
       <Text
         style={[
           styles.sectionDescription,
@@ -55,6 +56,8 @@ function Section({children, title}: SectionProps): React.JSX.Element {
   );
 }
 
+const Stack = createNativeStackNavigator();
+
 function App(): React.JSX.Element {
   const isDarkMode = useColorScheme() === 'dark';
 
@@ -63,36 +66,33 @@ function App(): React.JSX.Element {
   };
 
   return (
-    <SafeAreaView style={backgroundStyle}>
-      <StatusBar
-        barStyle={isDarkMode ? 'light-content' : 'dark-content'}
-        backgroundColor={backgroundStyle.backgroundColor}
-      />
-      <ScrollView
-        contentInsetAdjustmentBehavior="automatic"
-        style={backgroundStyle}>
-        <Header />
-        <View
-          style={{
-            backgroundColor: isDarkMode ? Colors.black : Colors.white,
-          }}>
-          <Section title="Step One">
-            Edit <Text style={styles.highlight}>App.tsx</Text> to change this
-            screen and then come back to see your edits.
-          </Section>
-          <Section title="See Your Changes">
-            <ReloadInstructions />
-          </Section>
-          <Section title="Debug">
-            <DebugInstructions />
-          </Section>
-          <Section title="Learn More">
-            Read the docs to discover what to do next:
-          </Section>
-          <LearnMoreLinks />
-        </View>
-      </ScrollView>
-    </SafeAreaView>
+    <NavigationContainer>
+      <Stack.Navigator>
+        <Stack.Screen
+          name="/"
+          options={{headerShown: false}}
+          component={LaunchScreen}
+        />
+        <Stack.Screen
+          name="/create-account-details"
+          options={{
+            headerShown: true,
+            header: () => <CreateAccountDetailsHeader />,
+          }}
+          component={CreateAccountDetails}
+        />
+        <Stack.Screen
+          name="/create-account"
+          options={{headerShown: true, header: () => <CreateAccountHeader />}}
+          component={CreateAccount}
+        />
+        <Stack.Screen
+          name="/home"
+          options={{headerShown: false}}
+          component={Home}
+        />
+      </Stack.Navigator>
+    </NavigationContainer>
   );
 }
 
